@@ -1,0 +1,180 @@
+&ACCESS RVO
+&REL 584
+&PARAM EDITMASK = *
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM DISKPATH = KRC:\R1\Program
+DEF WYDER( )
+;---------------------------------
+DECL EKI_STATUS RET
+;----------------
+ DECL POS Move_Position
+ REAL Frame_x
+ REAL Frame_y
+ REAL Frame_z
+ ;----
+ REAL Data_to_move_x[700]
+ REAL Data_to_move_y[700]
+ REAL Data_to_move_z[700]
+ INT Length_points
+;---------------------------------
+ INT i
+ INT j
+ INT k
+ INT c
+ INT Count
+ CHAR Mess_1[256]
+ CHAR Client_ON[10]
+ CHAR Client_half_ON[10]
+ CHAR Client_OFF[10]
+ DECL POS PIECE_FOUND
+
+
+INT State
+REAL State_r
+;---------------------------------
+;FOLD INI;{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+;---------------------------------
+FOR i=(1) TO (256)
+    Mess_1[i] = 0
+  ;Frame_y[i] = $nullframe ;FOR FRAME
+  ENDFOR
+  ;----------------
+  Length_points = 0
+  Frame_x = 0
+  Frame_y = 0
+  Frame_z = 0
+i = 1
+j = 1
+Count =0
+State = 50
+State_r = 0
+;---------------------------------
+Client_ON[] = "1"
+Client_half_ON[] = "22"
+Client_OFF[] = "555"
+;--------------------------------OTHER PROCESS-------------------------------------
+
+;Ready gripper
+$OUT[1] = TRUE
+$OUT[2] = FALSE
+WAIT SEC 1
+PTP XHOME
+
+;Not Ready gripper
+$OUT[1] = FALSE
+$OUT[2] = TRUE
+
+WAIT SEC 1
+
+;Ready gripper
+$OUT[1] = TRUE
+$OUT[2] = FALSE
+WAIT SEC 1
+
+
+
+
+;State_r = $DISTANCE
+
+;MsgNotify("Stat: = %1",,State_r)
+
+
+
+
+;----------------------------DATA FROM PYTHON--------------------------------------
+RET=EKI_Init("WYDER")
+RET=EKI_Open("WYDER")
+WAIT FOR $FLAG[1]
+
+;---------------------------------
+PTP_REL {A3 20}
+
+PTP_REL {A1 -45}
+;PTP {X 244.6, Y , Z 140, A 180 B 0, C -180}
+PTP {X 260, Y 360, Z 500, A 180, B 0, C -180}
+;PTP {X 300, Y 200, Z 140, A 90, B 0, C 180}
+
+;PTP {X 246.38, Y 154.81, Z 140, A 90, B 0, C -180}
+;RET=EKI_GetString("WYDER", "Sensor/Message", Mess_1[])
+
+
+;PIECE_FOUND = $POS_ACT_MES ; remember the position
+;PTP_REL {X 80, Y 80, Z 80}
+
+;PTP PIECE_FOUND
+
+
+
+RET = EKI_Send("WYDER", Client_half_ON[]);
+WAIT FOR $FLAG[2]
+RET=EKI_GetInt("WYDER", "Sensor/Length_points", Length_points)
+$FLAG[2] = FALSE
+;###########-------------###########
+loop
+WHILE i < Length_points+1
+RET = EKI_Send("WYDER", Client_ON[]);
+WAIT FOR $FLAG[2]
+
+RET=EKI_GetReal("WYDER", "Sensor/Frame_x", Frame_x)
+RET=EKI_GetReal("WYDER", "Sensor/Frame_y", Frame_y)
+;RET=EKI_GetReal("WYDER", "Sensor/Frame_z", Frame_z)
+Data_to_move_x[i] = Frame_x
+Data_to_move_y[i] = Frame_y
+;Data_to_move_z[i] = Frame_z
+RET = EKI_ClearBuffer("WYDER", "Sensor")
+;MsgNotify("X = %1",,Frame_x)
+;MsgNotify("Y = %1",,Frame_y)
+;MsgNotify("X = %1",,Frame_z)
+
+
+
+$FLAG[2] = FALSE
+IF Frame_z < 82.90 THEN
+Frame_z = 82.90
+ENDIF
+
+
+
+i = i + 1
+ENDWHILE
+;----------
+
+
+;$OV_PRO = 30 ; ALL AXIS MOVE WITH 30% VELOCITY
+;program move its
+FOR j=2 TO Length_points          ;###====================###
+
+
+Move_Position = {X 0, Y 0, Z 0}
+Move_Position.X = Data_to_move_x[j]
+Move_Position.Y = Data_to_move_y[j]
+;Move_Position.Z = Data_to_move_z[j]
+Move_Position.Z = 82.90
+
+$APO.CDIS=100
+LIN Move_Position C_DIS ;continuously movement
+
+
+;MsgNotify("Y = %1",, Count)
+Count = Count + 1
+ENDFOR                        ;###====================###
+
+
+;---------------------------------
+endloop
+;###########-------------###########
+
+WAIT FOR $FLAG[1]==FALSE
+RET=EKI_Close("WYDER")
+;RET=EKI_Clear("WYDER")
+END
+;------------------------------------------------------------------

@@ -1,0 +1,36 @@
+<ETHERNETKRL>
+	<CONFIGURATION>
+		<EXTERNAL>
+			<IP>172.31.1.150</IP>
+			<PORT>54600</PORT>
+			<TYPE>Client</TYPE>
+		</EXTERNAL>
+		<INTERNAL>
+			<ENVIRONMENT>Program</ENVIRONMENT>
+			<IP>172.31.1.147</IP>
+			<PORT>54601</PORT>
+			<TIMEOUT Connect="6000"/>
+			<PROTOCOL>TCP</PROTOCOL>
+			<ALIVE Set_Flag="1" />
+			<BUFFERING Mode="FIFO" Limit="512" />
+			<BUFFSIZE Limit="65534" />
+		</INTERNAL>
+	</CONFIGURATION>
+	<RECEIVE>
+		<XML>
+		<ELEMENT Tag="Sensor/Message" Type="STRING" />
+		<ELEMENT Tag="Sensor/Frame_x" Type="REAL" />
+		<ELEMENT Tag="Sensor/Frame_y" Type="REAL" />
+		<ELEMENT Tag="Sensor/Frame_z" Type="REAL" />
+		<ELEMENT Tag="Sensor/Length_points" Type="INT" />
+
+		<ELEMENT Tag="Sensor" Set_Flag="2" />
+		</XML>
+	</RECEIVE>
+	<SEND>
+		<XML>
+			<ELEMENT Tag="Robot/Message" Type="STRING"/>
+		</XML>
+	</SEND>
+</ETHERNETKRL>
+
