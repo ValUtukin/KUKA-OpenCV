@@ -44,13 +44,21 @@ def get_points_till_second_edge(points):
 
 
 def get_all_middle_points(till_first_edge, till_second_edge):
-    return till_first_edge[::-1] + till_second_edge
+    return till_first_edge[::-1] + till_second_edge  # inside returned list might be duplicates
 
 
 def draw_middle_line(blank, points):
     for i in range(0, len(points)):
         cv.circle(blank, (points[i][0], points[i][1]), 1, (200, 0, 255), thickness=1)
     cv.imshow('Middle line', blank)
+
+
+def no_duplicate(points):  # remove duplicates from given list
+    result = []
+    for point in points:
+        if point not in result:
+            result.append(point)
+    return result
 
 
 def main():
@@ -66,13 +74,15 @@ def main():
 
     first_points = get_points_till_first_edge(points)
     second_points = get_points_till_second_edge(points)
+    all_points = get_all_middle_points(first_points, second_points)
+    no_dp_points = no_duplicate(all_points)
 
     print(f'Total amount of points in the middle line is {len(first_points[::-1] + second_points)}')
     print(f'Amount of points till first edge is {len(first_points)}')
     print(f'Amount of points till second edge is {len(second_points)}')
     print('All points below:')
     print(*get_all_middle_points(first_points, second_points))
-    draw_middle_line(img, (first_points[::-1] + second_points))
+    draw_middle_line(img, no_dp_points)
 
     cv.waitKey(0)
 
