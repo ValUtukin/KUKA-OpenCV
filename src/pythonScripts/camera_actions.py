@@ -5,8 +5,8 @@ import numpy as np
 def undistort_fisheye(img):
     DIM = (1280, 720)
     K = np.array(
-        [[1400.5312752987763, 0.0, 628.4219705806136], [0.0, 1408.6956871650618, 414.91973942826155], [0.0, 0.0, 1.0]])
-    D = np.array([[-0.147852348788544], [0.7021442092673658], [-3.4442108779354763], [0.608256797813276]])
+        [[1412.2768793673747, 0.0, 630.6533412876211], [0.0, 1415.7993583527546, 413.1279213946876], [0.0, 0.0, 1.0]])
+    D = np.array([[-0.16527613684882056], [0.4591416642648053], [1.7277360275917524], [-8.364871454665604]])
     h, w = img.shape[:2]
     map1, map2 = cv.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, DIM, cv.CV_16SC2)
     undistorted_img = cv.remap(img, map1, map2, interpolation=cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT)
@@ -42,17 +42,12 @@ def draw_image_center(image):
 
 
 def grab_frame_from_camera(video_capture):
-    i = 0
     if video_capture.isOpened():
-        while i < 10:
-            ret, img = video_capture.read()
-            if ret:
-                return img
-            else:
-                i += 1
-                continue
+        ret, img = video_capture.read()
+        if ret:
+            return img
         else:
-            return "cannot get a frame"
+            return "no frame"
     else:
         return "cannot open camera"
 
@@ -62,7 +57,7 @@ def main():
     fish_eye = cv.imread('../../images/Apoint.jpg')
     undistorted_img = undistort_fisheye(fish_eye)
     center, new_image = draw_image_center(img)
-    print(*center)
+    print(f'Coords of center pixels {center}')
     cv.imshow('Center', new_image)
     cv.imshow('Undistorted', undistorted_img)
     cv.waitKey(0)

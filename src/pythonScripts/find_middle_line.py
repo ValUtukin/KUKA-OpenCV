@@ -1,6 +1,7 @@
 import math
 import cv2 as cv
 import numpy as np
+import find_contours as fc
 
 
 def get_points_till_first_edge(points):
@@ -49,7 +50,7 @@ def get_all_middle_points(till_first_edge, till_second_edge):
 
 def draw_middle_line(blank, points):
     for i in range(0, len(points)):
-        cv.circle(blank, (points[i][0], points[i][1]), 1, (200, 0, 255), thickness=1)
+        cv.circle(blank, (points[i][0], points[i][1]), 1, (24, 245, 186), thickness=1)
     cv.imshow('Middle line', blank)
 
 
@@ -68,9 +69,7 @@ def main():
     canny = cv.Canny(blur, 30, 60, apertureSize=3, L2gradient=True)
     contours, hierarchy = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
 
-    points = []
-    for point in contours[0]:
-        points.append([point[0][0], point[0][1]])
+    points = fc.find_coord(contours[0])
 
     first_points = get_points_till_first_edge(points)
     second_points = get_points_till_second_edge(points)

@@ -17,6 +17,16 @@ def find_coord(contour):
     return points
 
 
+def find_longest_contour(contours):
+    longest_contour = None
+    longest_contour_length = 0
+    for i in range(0, len(contours)):
+        if len(contours[i]) > longest_contour_length:
+            longest_contour = contours[i]
+            longest_contour_length = len(contours[i])
+    return longest_contour
+
+
 def main():
     img = cv.imread('../Images/lines_original.jpg')
     cropped_img = img[25:, :-20]  # Remove unwanted borders for exact image 'Images/lines_original.jpg'
