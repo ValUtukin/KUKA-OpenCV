@@ -50,9 +50,9 @@ Length_points = xml.SubElement(Sensor, 'Length_points')
 # Запись в XML - файл (запись, чтение, открытие и т.д.)
 tree = xml.ElementTree(Sensor)
 tree.write("Sample_2.xml")
-tree = xml.parse("../Sample_2.xml")
+tree = xml.parse("Sample_2.xml")
 root = tree.getroot()
-file = open("../Sample_2.xml", "rb")
+file = open("Sample_2.xml", "rb")
 stream = file.read(65536)
 ##############################################################
 #Comments#
@@ -111,7 +111,7 @@ while True:
 
         tree = xml.ElementTree(Sensor)
         tree.write("Sample_2.xml")
-        file = open("../Sample_2.xml", "rb")
+        file = open("Sample_2.xml", "rb")
         stream = file.read(65536)
         client.send(stream)
         command = '0'
@@ -131,7 +131,7 @@ while True:
 
             tree = xml.ElementTree(Sensor)
             tree.write("Sample_2.xml")
-            file = open("../Sample_2.xml", "rb")
+            file = open("Sample_2.xml", "rb")
             stream = file.read(65536)
             client.send(stream)
             count = count + 1

@@ -54,9 +54,10 @@ def grab_frame_from_camera(video_capture):
 
 def main():
     img = cv.imread('../../images/oddCurve.png')
-    fish_eye = cv.imread('../../images/Apoint.jpg')
+    fish_eye = cv.imread('../../images/calibrate1.jpg')
     undistorted_img = undistort_fisheye(fish_eye)
-    center, new_image = draw_image_center(img)
+    center, new_image = draw_image_center(undistorted_img)
+    cv.imwrite('undistorted_calibrate1.jpg', new_image)
     print(f'Coords of center pixels {center}')
     cv.imshow('Center', new_image)
     cv.imshow('Undistorted', undistorted_img)
