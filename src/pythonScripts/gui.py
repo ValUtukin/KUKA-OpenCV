@@ -55,7 +55,7 @@ root = Tk()
 root['bg'] = '#F5BF0C'
 root.title('KUKA Client')
 root.geometry('1080x920')
-photo = PhotoImage(file="../../images/robot.png")
+photo = PhotoImage(file="../../images/robotLogo.png")
 root.iconphoto(False, photo)
 root.resizable(width=False, height=False)
 

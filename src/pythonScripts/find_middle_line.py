@@ -63,7 +63,7 @@ def no_duplicate(points):  # remove duplicates from given list
 
 
 def main():
-    img = cv.imread('../../images/bruh5.jpg')
+    img = cv.imread('../../images/testCurve.jpg')
     undistorted_img = camera.undistort_fisheye(img)
     gray = cv.cvtColor(undistorted_img, cv.COLOR_BGR2GRAY)
     blur = cv.GaussianBlur(gray, ksize=(5, 5), sigmaX=1)
