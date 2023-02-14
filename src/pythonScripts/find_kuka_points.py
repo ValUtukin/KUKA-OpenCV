@@ -1,3 +1,4 @@
+import time
 import cv2 as cv
 import find_middle_line as fml
 import camera_actions as camera
@@ -7,16 +8,17 @@ import find_contours as fc
 def kuka_coord(points):
     kuka_points = []
     for point in points:
-        x = 240.8 + 90.5 - (point[1] - 720/2) / 4.9
-        y = 325.38 - 3.81 - (point[0] - 1280/2) / 4.9
+        x = 240.82 + 78.97 + 1.1 - (point[1] - 720/2) / 4.8
+        y = 325.38 - 10.32 + 0.9 - (point[0] - 1280/2) / 4.8
         kuka_points.append([round(x, 2), round(y, 2)])
     return kuka_points
 
 
 def main():
+    time.sleep(2.0)
     capture = cv.VideoCapture(0)
     capture.set(3, 1280)
-    capture.set(3, 1080)
+    capture.set(4, 720)
     frame = camera.grab_frame_from_camera(capture)
 
     if type(frame) is str:
@@ -42,8 +44,9 @@ def main():
 
         print(len(kuka_middle_line))
         print(*kuka_coord(kuka_middle_line))
-        fml.draw_middle_line(undistorted, skip_duplicate)
-        cv.waitKey(0)
+        # fml.draw_middle_line(undistorted, skip_duplicate)
+        # cv.waitKey(0)
+        return kuka_middle_line
 
 
 if __name__ == '__main__':

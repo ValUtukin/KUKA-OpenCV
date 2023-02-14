@@ -1,6 +1,6 @@
 import math
 import cv2 as cv
-import numpy as np
+import camera_actions as camera
 import find_contours as fc
 
 
@@ -63,8 +63,9 @@ def no_duplicate(points):  # remove duplicates from given list
 
 
 def main():
-    img = cv.imread('../../images/25sm.jpg')
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    img = cv.imread('../../images/bruh5.jpg')
+    undistorted_img = camera.undistort_fisheye(img)
+    gray = cv.cvtColor(undistorted_img, cv.COLOR_BGR2GRAY)
     blur = cv.GaussianBlur(gray, ksize=(5, 5), sigmaX=1)
     canny = cv.Canny(blur, 30, 60, apertureSize=3, L2gradient=True)
     contours, hierarchy = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
@@ -80,8 +81,8 @@ def main():
     print(f'Amount of points till first edge is {len(first_points)}')
     print(f'Amount of points till second edge is {len(second_points)}')
     print('All points below:')
-    print(*get_all_middle_points(first_points, second_points))
-    draw_middle_line(img, no_dp_points)
+    print(*no_dp_points)
+    draw_middle_line(undistorted_img, no_dp_points)
 
     cv.waitKey(0)
 
