@@ -6,7 +6,10 @@ import find_contours as fc
 
 def get_points_till_first_edge(points):
     first_edge_center_pixel_coords = []
+    first_edge_left_pixel_coords = []
+    first_edge_right_pixel_coords = []
     for i in range(0, len(points)):
+        first_edge_left_pixel_coords.append([points[i][0], points[i][1]])
         r0 = 15
         J = -1
         for j in range(i + 1, len(points)):
@@ -17,16 +20,20 @@ def get_points_till_first_edge(points):
                 xc = int((points[j][0] + points[i][0]) / 2)
                 yc = int((points[j][1] + points[i][1]) / 2)
                 first_edge_center_pixel_coords.append([xc, yc])
+                first_edge_right_pixel_coords.append([points[j][0], points[j][1]])
         if J < 0:
             break  # find an edge
         else:
             continue
-    return first_edge_center_pixel_coords
+    return first_edge_left_pixel_coords, first_edge_center_pixel_coords, first_edge_right_pixel_coords
 
 
 def get_points_till_second_edge(points):
+    second_edge_left_pixel_coords = []
     second_edge_center_pixel_coords = []
+    second_edge_right_pixel_coords = []
     for i in range(len(points) - 1, 0, -1):
+        second_edge_left_pixel_coords.append([points[i][0], points[i][1]])
         r0 = 15
         J = -1
         for j in range(i, 0, -1):
@@ -37,20 +44,21 @@ def get_points_till_second_edge(points):
                 xc = int((points[j][0] + points[i][0]) / 2)
                 yc = int((points[j][1] + points[i][1]) / 2)
                 second_edge_center_pixel_coords.append([xc, yc])
+                second_edge_right_pixel_coords.append([points[j][0], points[j][1]])
         if J < 0:
             break  # find an edge
         else:
             continue
-    return second_edge_center_pixel_coords
+    return second_edge_left_pixel_coords, second_edge_center_pixel_coords, second_edge_right_pixel_coords
 
 
 def get_all_middle_points(till_first_edge, till_second_edge):
     return till_first_edge[::-1] + till_second_edge  # inside returned list might be duplicates
 
 
-def draw_middle_line(blank, points):
+def draw_line(blank, points, color=(0, 255, 0)):
     for i in range(0, len(points)):
-        cv.circle(blank, (points[i][0], points[i][1]), 1, (24, 245, 186), thickness=1)
+        cv.circle(blank, (points[i][0], points[i][1]), 1, color, thickness=1)
     cv.imshow('Middle line', blank)
 
 
