@@ -8,8 +8,8 @@ import find_contours as fc
 def kuka_coord(points):
     kuka_points = []
     for point in points:
-        x = 240.82 + 78.97 + 1.1 - (point[1] - 720/2) / 4.8
-        y = 325.38 - 10.32 + 0.9 - (point[0] - 1280/2) / 4.8
+        x = 240.82 + 80.827961 - (point[1] - 720/2) / 4.6031
+        y = 325.38 - 10.6691 - (point[0] - 1280/2) / 4.6031
         kuka_points.append([round(x, 2), round(y, 2)])
     return kuka_points
 
