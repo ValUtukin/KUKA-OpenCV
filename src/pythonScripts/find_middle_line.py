@@ -52,7 +52,7 @@ def get_points_till_second_edge(points):
     return second_edge_left_pixel_coords, second_edge_center_pixel_coords, second_edge_right_pixel_coords
 
 
-def get_all_middle_points(till_first_edge, till_second_edge):
+def get_all_points(till_first_edge, till_second_edge):
     return till_first_edge[::-1] + till_second_edge  # inside returned list might be duplicates
 
 
@@ -82,7 +82,7 @@ def main():
 
     first_points = get_points_till_first_edge(points)
     second_points = get_points_till_second_edge(points)
-    all_points = get_all_middle_points(first_points, second_points)
+    all_points = get_all_points(first_points, second_points)
     no_dp_points = no_duplicate(all_points)
 
     print(f'Total amount of points in the middle line is {len(first_points[::-1] + second_points)}')
@@ -90,7 +90,7 @@ def main():
     print(f'Amount of points till second edge is {len(second_points)}')
     print('All points below:')
     print(*no_dp_points)
-    draw_middle_line(undistorted_img, no_dp_points)
+    draw_line(undistorted_img, no_dp_points)
 
     cv.waitKey(0)
 

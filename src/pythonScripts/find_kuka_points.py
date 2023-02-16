@@ -33,19 +33,19 @@ def main():
         longest_contour = fc.find_longest_contour(contours)
         pixel_coord = fc.find_coord(longest_contour)
 
-        till_first_edge = fml.get_points_till_first_edge(pixel_coord)
-        till_second_edge = fml.get_points_till_second_edge(pixel_coord)
+        fel, fec, fer = fml.get_points_till_first_edge(pixel_coord)
+        sel, sec, ser = fml.get_points_till_second_edge(pixel_coord)
 
-        pixel_middle_line = fml.get_all_middle_points(till_first_edge, till_second_edge)
+        pixel_left_line = fml.get_all_points(fel, sel)
+        pixel_middle_line = fml.get_all_points(fec, sec)
+        pixel_right_line = fml.get_all_points(fer, ser)
+
         no_dp_points = fml.no_duplicate(pixel_middle_line)
         skip_duplicate = [no_dp_points[i] for i in range(0, len(no_dp_points), 3)]
 
         kuka_middle_line = kuka_coord(skip_duplicate)
 
-        print(len(kuka_middle_line))
-        print(*kuka_coord(kuka_middle_line))
-        # fml.draw_middle_line(undistorted, skip_duplicate)
-        # cv.waitKey(0)
+        print(f'Total amount of points for KUKA:{len(kuka_middle_line)}')
         return kuka_middle_line
 
 
