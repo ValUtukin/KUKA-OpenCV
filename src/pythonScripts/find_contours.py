@@ -3,7 +3,6 @@ import numpy as np
 import os
 
 
-# Method for saving images in specific directory
 def save_image(file_name, image, dir_name):
     os.chdir(dir_name)
     cv.imwrite(file_name, image)
@@ -38,29 +37,24 @@ def draw_all_contours(contours, hierarchy, blank, color=(0, 255, 0)):
 
 
 def main():
+    directory = r'C:\Users\Bogh\TestFolder'  # Directory for saving contours
     img = cv.imread('../../images/testCurve.jpg')
-    cropped_img = img[25:, :-20]  # Remove unwanted borders for exact image 'Images/lines_original.jpg'
-    gray = cv.cvtColor(cropped_img, cv.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     blur = cv.GaussianBlur(gray, (5, 5), 1)
     canny = cv.Canny(blur, 30, 60, apertureSize=3, L2gradient=True)
 
     contours, hierarchy = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_TC89_KCOS)  # Find contours (canny)
     drawing = np.zeros((canny.shape[0], canny.shape[1], 1), dtype='uint8')  # Make Matrix for drawing
-    # terminate_matrix = drawing.copy()
-    directory = r'C:\Users\Bogh\TestFolder'  # Directory for saving contours
+    terminate_matrix = drawing.copy()
 
     for i in range(len(contours)):
         if len(contours[i]):  # If contour has more than 10 points
             cv.drawContours(drawing, contours, i, 255, 1, cv.LINE_8, hierarchy, 0)  # Draw contour in drawing matrix
 
-            # contour = cv.bitwise_xor(drawing, terminate_matrix)
-            # save_image(f'Contour#{i + 1}.jpg', contour, directory)  # Saving .jpg's of contours
+            contour = cv.bitwise_xor(drawing, terminate_matrix)
+            save_image(f'Contour#{i + 1}.jpg', contour, directory)  # Saving .jpg's of contours
 
-            # terminate_matrix = cv.bitwise_or(contour, terminate_matrix)  # Add contour to terminate matrix
-    cv.imshow('Contours', drawing)
-    print(len(contours))
-    points = find_coord(contours[2])  # Get a list of coord of contour index 2
-    print(*points, sep="\n")
+            terminate_matrix = cv.bitwise_or(contour, terminate_matrix)  # Add contour to terminate matrix
     cv.waitKey(0)
 
 

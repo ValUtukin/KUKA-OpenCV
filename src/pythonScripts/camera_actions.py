@@ -13,6 +13,22 @@ def undistort_fisheye(img):
     return undistorted_img
 
 
+def rescale_frame(img, scale=0.3):
+    # Work for images, video and live video
+    width = int(img.shape[1] * scale)
+    height = int(img.shape[0] * scale)
+
+    dimensions = (width, height)
+
+    return cv.resize(img, dimensions, interpolation=cv.INTER_AREA)
+
+
+def change_resolution(width, height, video_capture):
+    # Work only for live video
+    video_capture.set(3, width)
+    video_capture.set(4, height)
+
+
 def draw_image_center(image):
     center_points = []
     if image.shape[1] % 2 != 0:
